@@ -124,6 +124,19 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--bg);color:var
 </head>
 <body>
 
+<div id="accessGate" style="position:fixed;inset:0;background:var(--bg);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="max-width:360px;width:100%;text-align:center;">
+    <div style="font-size:36px;margin-bottom:14px;">🔒</div>
+    <div style="font-family:'Shippori Mincho',serif;font-size:19px;font-weight:700;margin-bottom:8px;">建設経理合格道場</div>
+    <div style="font-size:12px;color:var(--mu);margin-bottom:20px;line-height:1.7;">ご購入時にお伝えしたアクセスコードを入力してください</div>
+    <input type="password" id="gateInput" placeholder="アクセスコード" onkeydown="if(event.key==='Enter')checkGate()" style="width:100%;padding:12px;border:1px solid var(--mid);border-radius:4px;font-size:14px;text-align:center;margin-bottom:10px;font-family:'Zen Kaku Gothic New',sans-serif;box-sizing:border-box;">
+    <div id="gateError" style="display:none;color:#b3432b;font-size:12px;margin-bottom:10px;">コードが違います。もう一度確認してください。</div>
+    <button onclick="checkGate()" style="width:100%;padding:12px;background:var(--ac);color:#fff;border:none;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;">入室する</button>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none;">
+
 <div class="hd">
   <div class="hd-r">
     <div><div class="hd-t">建設経理合格道場</div><div class="hd-s">建設業経理士２級　試験対策</div></div>
@@ -271,7 +284,31 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--bg);color:var
   </div>
 </div>
 
+</div>
+
 <script>
+/* ▼ここを好きなアクセスコードに変更してください（購入者にお伝えする合言葉です） */
+var ACCESS_CODE='kinouyorikyo31';
+var GATEKEY='gokaku-dojo-unlocked';
+function checkGate(){
+  var v=document.getElementById('gateInput').value.trim();
+  if(v===ACCESS_CODE){
+    try{ localStorage.setItem(GATEKEY,'1'); }catch(e){}
+    unlockApp();
+  }else{
+    document.getElementById('gateError').style.display='block';
+  }
+}
+function unlockApp(){
+  document.getElementById('accessGate').style.display='none';
+  document.getElementById('appRoot').style.display='block';
+}
+(function checkGateOnLoad(){
+  var unlocked;
+  try{ unlocked=localStorage.getItem(GATEKEY); }catch(e){ unlocked=null; }
+  if(unlocked==='1'){ unlockApp(); }
+})();
+
 var MISTAKE_TYPES=['論点判定ミス','公式選択ミス','仕訳科目ミス','借方貸方ミス','計算ミス','月数ミス','在庫数量ミス','配賦基準ミス','転記ミス','記入漏れ','問題文読み落とし'];
 
 var QS=[
